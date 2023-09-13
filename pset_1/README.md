@@ -2,7 +2,7 @@
 
 ## Dependencies
 
-Execute the following in the terminal before running this notebook:
+Execute the following in the terminal before running any code:
 `pip install -r requirements.txt`
 
 ## Exercise 1: Body temperature clinical decision support
