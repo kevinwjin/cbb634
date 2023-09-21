@@ -4,7 +4,7 @@
 import xml.etree.ElementTree as ET
 
 print("Parsing XML...")
-mesh = ET.parse("/Users/kevin/Documents/Computational Methods for Informatics/cbb634/pset_1/desc2023.xml")
+mesh = ET.parse("/Users/kevin/Downloads/desc2023.xml")
 print("Parsing complete.")
 
 root = mesh.getroot()
