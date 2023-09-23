@@ -23,7 +23,7 @@ for record in root.findall("./*DescriptorName/[String='Nervous System Diseases']
 tree_numbers = root.findall(".//TreeNumber")
 numbers_of_interest = []
 for tree_number in tree_numbers:
-    if tree_number.text.startswith("C20") and tree_number.text.startswith("C10"):
+    if tree_number.text.startswith("C20") or tree_number.text.startswith("C10"):
         numbers_of_interest.append(tree_number.text)
 
 for number in numbers_of_interest:
@@ -52,7 +52,7 @@ def get_descendent_names(tree_number_a, tree_number_b):
     tree_numbers = root.findall(".//TreeNumber")
     numbers_of_interest = []
     for tree_number in tree_numbers:
-        if tree_number.text.startswith(tree_number_a) and tree_number.text.startswith(tree_number_b):
+        if tree_number.text.startswith(tree_number_a) or tree_number.text.startswith(tree_number_b):
             numbers_of_interest.append(tree_number.text)     
     for number in numbers_of_interest:
         record = root.findall(f".//*[TreeNumber = '{number}']/..")
