@@ -1,53 +1,60 @@
 # Exercise 5: Analysis of MeSH data
 
 # Parse XML
-import xml.etree.ElementTree as ET
+from lxml import etree
 
 print("Parsing XML...")
-mesh = ET.parse("/Users/kevin/Downloads/desc2023.xml")
+mesh = etree.parse("/Users/kevin/Downloads/desc2023.xml")
 print("Parsing complete.")
 root = mesh.getroot()
 
 # Extract values of interest
 # Report the DescriptorName associated with DescriptorUI D007154
 for record in root.findall(".//*[DescriptorUI='D007154']"):
-    name = ET.tostring(record[1], encoding="utf8", method="text").decode().replace("\n", "").strip()
+    name = etree.tostring(record[1], encoding="utf8", method="text").decode().replace("\n", "").strip()
     print(name)
 
 # Report the DescriptorUI associated with DescriptorName "Nervous System Diseases"
-for record in root.findall(".//*[DescriptorName='Nervous System Diseases']"):
-    ui = ET.tostring(record[0], encoding="utf8", method="text").decode().replace("\n", "").strip()
-    print(ui)
+for record in root.findall("./*DescriptorName/[String='Nervous System Diseases']/.."):
+    print(record[0].text)
 
-# for child in root.iter():
-#     if child[0].text == "D007154":
-#         print(child[1].text)
+# Report DescriptorNames of descendants of both "Nervous System Diseases" and D007154
+# Hint: Each item should have tree number C10 and C20
+tree_numbers = root.findall(".//TreeNumber")
+numbers_of_interest = []
+for tree_number in tree_numbers:
+    if tree_number.text.startswith("C20") and tree_number.text.startswith("C10"):
+        numbers_of_interest.append(tree_number.text)
 
-# items = list(mesh.iter())
-# for i, item in enumerate(items):
-#     if item.text == "D007154":
-#         name == items[i + 1]
+for number in numbers_of_interest:
+    record = root.findall(f".//*[TreeNumber = '{number}']/..")
+    name = etree.tostring(record[0][1], encoding="utf8", method="text").decode().replace("\n", "").strip()
+    print(name)
 
-# for sec in parent.iter("sec"):
-#     for title in sec.iter("title"):
-#         text = title.text
-#         if text and "methods" in text:
-#                 print("**title: " + text + " **** sec id : " + sec.get("id, "))
-
-# Biomedical explanation:
-
+# Biomedical explanation: According to the MeSH hierarchy, the above code locates the disease associated with a certain unique identifier,
+# the identifier associated with a certain disease, and all conditions that are categorized under both aforementioned diseases. All such
+# conditions are classified by the National Library of Medicine as being neuroimmunological disorders, where a body's overly active
+# immune system appears to attack its own nervous system, mistaking it for a foreign invader.
 
 # Generic function versions
 def get_name(ui):
-    pass
+    for record in root.findall(f".//*[DescriptorUI='{ui}']"):
+        name = etree.tostring(record[1], encoding="utf8", method="text").decode().replace("\n", "").strip()
+        return name
 
 
 def get_ui(name):
-    pass
+    for record in root.findall(f"./*DescriptorName/[String='{name}']/.."):
+        return record[0].text
 
 
-def get_descendent_names(ui, name):
-    pass
-
-
-# Test generic function versions
+def get_descendent_names(tree_number_a, tree_number_b):
+    tree_numbers = root.findall(".//TreeNumber")
+    numbers_of_interest = []
+    for tree_number in tree_numbers:
+        if tree_number.text.startswith(tree_number_a) and tree_number.text.startswith(tree_number_b):
+            numbers_of_interest.append(tree_number.text)     
+    for number in numbers_of_interest:
+        record = root.findall(f".//*[TreeNumber = '{number}']/..")
+        name = etree.tostring(record[0][1], encoding="utf8", method="text").decode().replace("\n", "").strip()
+        print(name)
