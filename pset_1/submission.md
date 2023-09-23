@@ -290,6 +290,8 @@ case_peaks("District of Columbia", "Maryland")
 
 # Exercise 5: Analysis of MeSH Data
 
+**NOTE: Exercise 5 was done as a Python script because Jupyter on my machine ran into issues that could not be resolved parsing the gigantic XML file for this assignment. I apologize for the inconsistency between Jupyter Notebooks and Python scripts in my submission.**
+
 ```python
 # Parse XML
 from lxml import etree
