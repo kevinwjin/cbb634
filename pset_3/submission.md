@@ -4,6 +4,7 @@ Execute the following in the terminal before running any notebooks:
 
 # Exercise 1: 1000 Alzheimer's disease and 1000 cancer papers from PubMed 
 
+
 ```python
 # Query Entrez API for PubMed IDs given search term and year
 import requests
@@ -513,6 +514,8 @@ plt.show()
     
 
 
+**Interpretation:** The sharp dip in the beginning suggests an anomalous point, perhaps caused by an artifact in the time measurement - the sorting might be instant for very small arrays and since this is a log-log plot, there could be an issue with how Python handles very small numbers.
+
 
 ```python
 # Comparison of performance
@@ -596,12 +599,11 @@ plt.show()
 
 
     
-![png](exercise_4_files/exercise_4_5_0.png)
+![png](exercise_4_files/exercise_4_6_0.png)
     
 
 
-**Discussion of findings:** The parallel version of `merge_sort()` should be faster, but the plot shows that it is somehow slower than the non-parallel version. There could be several reasons for this. Firstly, for smaller arrays, parallelization introduces overhead that might result in slower speeds than a non-parallel sort; however, I recently upgraded to a new computer and this should no longer be a significant issue. Secondly, the parallel version does not seem to scale as efficiently as hoped and remains consistently slower than the non-parallel version. The consistency is expected, but the parallel version being slower than the non-parallel version is not. Thirdly, the implementation of the sorting algorithm could be problematic. Unfortunately, the logic of my code appears to be correct and I have consulted an LLM to verify that there seems to be no issue with my implementation. Fourthly, the way that the performance is timed could also be problematic. However, I believe that I have avoided most problems by having the arrays sort the same data for fairness. I also I have generated arrays of sufficiently large size and sufficient variation to avoid any overhead issues I can think of. I am unable to determine why the parallel merge sort is not performing as expected.
-
+**Interpretation:** The parallel version of `merge_sort()` should be faster, but the plot shows that it is somehow slower than the non-parallel version. There could be several reasons for this. Firstly, for smaller arrays, parallelization introduces overhead that might result in slower speeds than a non-parallel sort; however, I recently upgraded to a new computer and this should no longer be a significant issue. Secondly, the parallel version does not seem to scale as efficiently as hoped and remains consistently slower than the non-parallel version. The consistency is expected, but the parallel version being slower than the non-parallel version is not. Thirdly, the implementation of the sorting algorithm could be problematic. Unfortunately, the logic of my code appears to be correct and I have consulted an LLM to verify that there seems to be no issue with my implementation. Fourthly, the way that the performance is timed could also be problematic. However, I believe that I have avoided most problems by having the arrays sort the same data for fairness. I also I have generated arrays of sufficiently large size and sufficient variation to avoid any overhead issues I can think of. I am unable to determine why the parallel merge sort is not performing as expected.
 
 # Exercise 5: Final project dataset exploratory analysis
 
@@ -1034,4 +1036,3 @@ for year in visas["Year"].unique():
 
 
 **Commentary:** The number of visas issued by Japan steadily increased from 2006-2017, and China has remained the country sending the most visa applicants throughout.
-
