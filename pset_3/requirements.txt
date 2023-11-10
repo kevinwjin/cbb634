@@ -9,3 +9,4 @@ numpy>=1.25.2
 seaborn>=0.12.2
 matplotlib>=3.8.1
 tqdm
+multiprocess
