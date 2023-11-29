@@ -1,4 +1,4 @@
-# Implement web server in Flask
+# Implement an NCI cancer incidence lookup API as a web server in Flask
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
@@ -11,7 +11,9 @@ def index():
 
 @app.route("/info", methods=["POST"])
 def info():
-    pass
+    state = request.form['state'].lower()
+    analysis = 'bruh'
+    return render_template("info.html", state=state, analysis=analysis)
 
 
 @app.route("/state/<string:name>")
