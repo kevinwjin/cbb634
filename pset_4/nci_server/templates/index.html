@@ -3,12 +3,14 @@
         <meta charset="UTF-8">
         <title>NCI Cancer Incidence API</title>
         <link rel="stylesheet" href='/static/main.css' />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/static/submit.js"></script>
     </head>
     <body>
         <h1>NCI Age-Adjusted Incidence of Cancer by State</h1>
         <h2>Enter a state to return its age-adjusted incidence rate:</h2>
         <form action="/info" method="POST">
-            <textarea name="usertext" placeholder="Enter a state..."></textarea>
+            <textarea id="state" name="state" placeholder="Enter a state..."></textarea>
             <br>
             <br>
             <input type="submit" value="Analyze">
