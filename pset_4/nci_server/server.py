@@ -9,15 +9,15 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/info", methods=["POST"])
+def info():
+    pass
+
+
 @app.route("/state/<string:name>")
 def state(name):
     data = {"names": ["John", "Jacob", "Julie", "Jennifer"]}
     return jsonify(data)
-
-
-@app.route("/info", methods=["GET"])
-def info():
-    pass
 
 
 if __name__ == '__main__':
