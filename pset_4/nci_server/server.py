@@ -12,7 +12,7 @@ def index():
 @app.route("/info", methods=["POST"])
 def info():
     state = request.form['state'].lower()
-    analysis = 'bruh'
+    analysis = state.upper()
     return render_template("info.html", state=state, analysis=analysis)
 
 
