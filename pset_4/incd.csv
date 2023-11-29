@@ -1,5 +1,5 @@
-State, FIPS,"Age-Adjusted Incidence Rate([rate note]) - cases per 100,000","Lower 95% Confidence Interval","Upper 95% Confidence Interval","CI*Rank([rank note])","Lower CI (CI*Rank)","Upper CI (CI*Rank)",Average Annual Count,Recent Trend,"Recent 5-Year Trend ([trend note]) in Incidence Rates","Lower 95% Confidence Interval","Upper 95% Confidence Interval"
-"US (SEER+NPCR)",00000,442.3 ,442, 442.6,N/A , N/A , N/A,1698328,stable,-0.3 ,-0.6, 0.1
+State, FIPS,"Age-Adjusted Incidence Rate (cases per 100,000)","Lower 95% Confidence Interval","Upper 95% Confidence Interval","CI*Rank","Lower CI (CI*Rank)","Upper CI (CI*Rank)",Average Annual Count,Recent Trend,"Recent 5-Year Trend in Incidence Rates","Lower 95% Confidence Interval","Upper 95% Confidence Interval"
+"US",00000,442.3 ,442, 442.6,N/A , N/A , N/A,1698328,stable,-0.3 ,-0.6, 0.1
 "Kentucky",21000,506.8 ,504.1, 509.6,1 , 1 , 1,27911,stable,-0.3 ,-0.8, 0.2
 "Iowa",19000,486.8 ,483.6, 490,2 , 2 , 4,19197,rising,1.0 ,0.3, 1.8
 "West Virginia",54000,482.4 ,478.4, 486.4,3 , 2 , 6,12174,stable,-0.2 ,-0.4, 0.1
@@ -52,35 +52,3 @@ State, FIPS,"Age-Adjusted Incidence Rate([rate note]) - cases per 100,000","Lowe
 "Puerto Rico",72001,351.7 ,349, 354.4,N/A , N/A , N/A,14350,stable,0.0 ,-1.3, 1.4
 "Indiana",18000,data not available ,data not available, data not available,N/A , N/A , N/A,data not available,data not available,data not available,data not available,data not available
 "Nevada",32000,data not available ,data not available, data not available,N/A , N/A , N/A,data not available,data not available,data not available,data not available,data not available
-
-Created by statecancerprofiles.cancer.gov on 11/27/2023 2:57 pm.
-
-State Cancer Registries may provide more current or more local data.
-
-
-Trend
-   Rising when 95% confidence interval of average annual percent change is above 0.
-   Stable when 95% confidence interval of average annual percent change includes 0.
-   Falling when 95% confidence interval of average annual percent change is below 0.
-
-"[rate note] Incidence rates (cases per 100,000 population per year) are age-adjusted to the 2000 US standard population [http://www.seer.cancer.gov/stdpopulations/stdpop.19ages.html] (19 age groups: <1, 1-4, 5-9, ... , 80-84, 85+). Rates are for invasive cancer only (except for bladder cancer which is invasive and in situ) or unless otherwise specified. Rates calculated using SEER*Stat. Population counts for denominators are based on Census populations as modified [https://seer.cancer.gov/popdata/] by NCI. The US Population Data File [https://seer.cancer.gov/popdata/] is used for SEER and NPCR incidence rates."
-"[trend note] Incidence data come from different sources. Due to different years of data availability, most of the trends are AAPCs based on APCs but some are APCs calculated in SEER*Stat. Please refer to the source for each area for additional information."
-
-Rates and trends are computed using different standards for malignancy. For more information see malignant.html.
-
-"^ All Stages refers to any stage in the Surveillance, Epidemiology, and End Results (SEER) summary stage [ https://seer.cancer.gov/tools/ssm/ ]."
-"[rank note]Results presented with the CI*Rank statistics help show the usefulness of ranks. For example, ranks for relatively rare diseases or less populated areas may be essentially meaningless because of their large variability, but ranks for more common diseases in densely populated regions can be very useful. More information about methodology can be found on the CI*Rank website."
-Data not available [http://statecancerprofiles.cancer.gov/datanotavailable.html] for this combination of data selections.
-
-"1 Source: National Program of Cancer Registries [ https://www.cdc.gov/cancer/npcr/index.htm ] and Surveillance, Epidemiology, and End Results [ http://seer.cancer.gov ] SEER*Stat Database - United States Department of Health and Human Services, Centers for Disease Control and Prevention and National Cancer Institute. Based on the 2022 submission."
-"5 Source: National Program of Cancer Registries [ https://www.cdc.gov/cancer/npcr/index.htm ] and Surveillance, Epidemiology, and End Results [ http://seer.cancer.gov ] SEER*Stat Database - United States Department of Health and Human Services, Centers for Disease Control and Prevention and National Cancer Institute. Based on the 2022 submission."
-"6 Source: National Program of Cancer Registries SEER*Stat Database - United States Department of Health and Human Services, Centers for Disease Control and Prevention (based on the 2022 submission).  [ https://www.cdc.gov/cancer/npcr/index.htm ]"
-7 Source: SEER November 2022 submission.
-"8 Source: Incidence data provided by the SEER Program. ( http://seer.cancer.gov ) AAPCs are calculated by the Joinpoint Regression Program ( https://surveillance.cancer.gov/joinpoint/ ) and are based on APCs. Data are age-adjusted to the 2000 US standard population ( http://www.seer.cancer.gov/stdpopulations/single_age.html ) (19 age groups: <1, 1-4, 5-9, ... , 80-84,85+). Rates are for invasive cancer only (except for bladder cancer which is invasive and in situ) or unless otherwise specified. Population counts for denominators are based on Census populations as modifed by NCI. The US Population Data ( http://seer.cancer.gov/popdata/ ) File is used with SEER November 2022 data. "
-
-
-"Interpret Rankings provides insight into interpreting cancer incidence statistics.  When the population size for a denominator is small, the rates may be unstable.  A rate is unstable when a small change in the numerator (e.g., only one or two additional cases) has a dramatic effect on the calculated rate."
-
-"Data not available [http://statecancerprofiles.cancer.gov/datanotavailable.html] for this combination of geography, cancer site, age, and race/ethnicity."
-Data for the United States does not include data from Nevada.
-Data for the United States does not include Puerto Rico.
