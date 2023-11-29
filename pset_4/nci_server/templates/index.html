@@ -5,15 +5,20 @@
         <link rel="stylesheet" href='/static/main.css' />
     </head>
     <body>
-        <h1>NCI Cancer Incidence API</h1>
-        <h2>Please select a state:</h2>
-        <div class="dropdown">
-            <button onclick="dropdown" class="dropbtn">Select State</button>
-            <div id="selectState" class="dropdown-content">
-                {% for state in states %}
-                <a href="/state/{{ state }}">{{ state }}</a>
-                {% endfor %}
-            </div>
-        </div>
+        <h1>NCI Age-Adjusted Incidence of Cancer by State</h1>
+        <h2>Enter a state to return its age-adjusted incidence rate:</h2>
+        <form action="/info" method="POST">
+            <textarea name="usertext" placeholder="Enter a state..."></textarea>
+            <br>
+            <br>
+            <input type="submit" value="Analyze">
+        </form>
+        <footer>
+            <p>Data Source: <a href="https://statecancerprofiles.cancer.gov/incidencerates/index.php">National Cancer Institute</a></p>
+            <p>Kevin Jin</p>
+            <p>CB&B 634: Computational Methods for Informatics</p>
+            <p>Yale University</p>
+            <p><a href="mailto:kevin.jin@yale.edu">kevin.jin@yale.edu</a></p>
+          </footer>
     </body>
 </html>
