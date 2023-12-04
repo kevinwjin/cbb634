@@ -14,11 +14,15 @@ def index():
 # API endpoint for state
 @app.route("/state/<string:name>")
 def state(name):
+    data = pd.read_csv("incidence_rates.csv")
     if name == "US" or name == "U.S." or name == "United States":
         name = "US"
+    elif state == "DC" or state == "D.C.":
+        state = "District of Columbia"
+    elif state not in data["State"]:
+        return render_template("error.html")
     else:
         name.capitalize()
-    data = pd.read_csv("incidence_rates.csv")
     entry = dict(data[data["State"].str.contains(name)].iloc[0, [1, 2]])
     return jsonify(entry)
 
