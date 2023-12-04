@@ -9,6 +9,7 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+
 # Info page with results
 @app.route("/info", methods=["POST"])
 def info():
