@@ -27,4 +27,7 @@ def state(name):
 
 # Prevents execution if imported
 if __name__ == '__main__':
-    app.run(debug=True, ssl_context=("cert.pem", "key.pem"), port=5000)
+    app.run(debug=True,  # Allows for verbose error messages
+            ssl_context=("cert.pem", "key.pem"),  # SSL cert/key
+            host='0.0.0.0',  # Allows external connections
+            port=5000)  # Port to run on
