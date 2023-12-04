@@ -14,17 +14,26 @@ def index():
 # API endpoint for state
 @app.route("/state/<string:name>")
 def state(name):
+    if name == "US" or name == "U.S." or name == "United States":
+        name = "US"
+    else:
+        name.capitalize()
     data = pd.read_csv("incidence_rates.csv")
-    # rate = float(data[data["State"].str.contains(name.capitalize())].iloc[:, 2])
-    return jsonify(data[name])
+    entry = dict(data[data["State"].str.contains(name)].iloc[0, [1, 2]])
+    return jsonify(entry)
 
 
 # Info page with results
 @app.route("/info/", methods=["GET"])
 def info():
     state = request.args.get("state")
-    analysis = state.capitalize()
-    return render_template("info.html", state=state, analysis=analysis)
+    if state == "US" or state == "U.S." or state == "United States":
+        state = "US"
+    else:
+        state.capitalize()
+    data = pd.read_csv("incidence_rates.csv")
+    rate = float(data[data["State"].str.contains(state)].iloc[0, 2])
+    return render_template("info.html", state=state, rate=rate)
 
 
 # Prevents execution if imported
