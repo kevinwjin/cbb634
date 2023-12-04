@@ -27,11 +27,15 @@ def state(name):
 @app.route("/info/", methods=["GET"])
 def info():
     state = request.args.get("state")
-    if state == "US" or state == "U.S." or state == "United States":
+    data = pd.read_csv("incidence_rates.csv")
+    if state == "U.S." or state == "United States":
         state = "US"
+    elif state == "DC" or state == "D.C.":
+        state = "District of Columbia"
+    elif state not in data["State"]:
+        return render_template("error.html")
     else:
         state.capitalize()
-    data = pd.read_csv("incidence_rates.csv")
     rate = float(data[data["State"].str.contains(state)].iloc[0, 2])
     return render_template("info.html", state=state, rate=rate)
 
