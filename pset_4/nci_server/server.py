@@ -17,9 +17,9 @@ def state(name):
     data = pd.read_csv("incidence_rates.csv")
     if name == "US" or name == "U.S." or name == "United States":
         name = "US"
-    elif state == "DC" or state == "D.C.":
-        state = "District of Columbia"
-    elif state not in data["State"]:
+    elif name == "DC" or name == "D.C.":
+        name = "District of Columbia"
+    elif name not in data["State"]:
         return render_template("error.html")
     else:
         name.capitalize()
