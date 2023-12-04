@@ -1,5 +1,6 @@
 # Implement an NCI cancer incidence lookup API as a web server in Flask
 from flask import Flask, render_template, request, jsonify
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -10,19 +11,20 @@ def index():
     return render_template("index.html")
 
 
-# Info page with results
-@app.route("/info", methods=["POST"])
-def info():
-    state = request.form['state'].lower()
-    analysis = state.upper()
-    return render_template("info.html", state=state, analysis=analysis)
-
-
 # API endpoint for state
 @app.route("/state/<string:name>")
 def state(name):
-    data = {"names": ["John", "Jacob", "Julie", "Jennifer"]}
-    return jsonify(data)
+    data = pd.read_csv("incidence_rates.csv")
+    # rate = float(data[data["State"].str.contains(name.capitalize())].iloc[:, 2])
+    return jsonify(data[name])
+
+
+# Info page with results
+@app.route("/info/", methods=["GET"])
+def info():
+    state = request.args.get("state")
+    analysis = state.capitalize()
+    return render_template("info.html", state=state, analysis=analysis)
 
 
 # Prevents execution if imported
