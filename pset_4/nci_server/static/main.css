@@ -58,3 +58,7 @@ footer {
     background-color: DarkSalmon;
     color: white;
 }
+
+span.small {
+    font-size: smaller;
+}
