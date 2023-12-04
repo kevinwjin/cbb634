@@ -4,12 +4,21 @@
         <link rel="icon" type="image/x-icon" href="/static/favicon.jpeg" />
     </head>
     <body>
-        You entered:
+        <h2>State:</h2>
         <pre style="background-color: lightgray; margin-left: 5em">{{ state }}</pre>
 
-        My analysis:
-        <pre style="background-color: lightgray; margin-left: 5em">{{ analysis }}</pre>
+        <h2>Age-Adjusted Incidence Rate (cases per 100,000):</h2>
+        <pre style="background-color: lightgray; margin-left: 5em">{{ rate }}</pre>
 
-        <a href="/">Back to homepage</a>
+        <footer>
+            <b><p>Data is sourced from the <a href="https://statecancerprofiles.cancer.gov/incidencerates/index.php">National Cancer Institute</a>.</p></b>
+            <br>
+            <span class="small"><p>Kevin Jin</p>
+            <p>CB&B 634: Computational Methods for Informatics</p>
+            <p>Yale University</p>
+            <p><a href="mailto:kevin.jin@yale.edu">kevin.jin@yale.edu</a></p></span>
+            <p></p><a href="/">Back to homepage</a></p>
+        </footer>
     </body>
+    
 </html>
