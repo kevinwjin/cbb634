@@ -17,7 +17,7 @@ def state(name):
     data = pd.read_csv("incidence_rates.csv")
     if name == "US" or name == "U.S." or name == "United States":
         name = "US"
-    elif name == "DC" or name == "D.C.":
+    elif name == "DC" or name == "D.C." or name == "Washington DC" or name == "Washington D.C.":
         name = "District of Columbia"
     elif name not in data["State"]:
         return render_template("error.html")
@@ -34,7 +34,7 @@ def info():
     data = pd.read_csv("incidence_rates.csv")
     if state == "U.S." or state == "United States":
         state = "US"
-    elif state == "DC" or state == "D.C.":
+    elif state == "DC" or state == "D.C." or state == "Washington DC" or state == "Washington D.C.":
         state = "District of Columbia"
     elif state not in data["State"]:
         return render_template("error.html")
