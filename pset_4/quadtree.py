@@ -43,7 +43,8 @@ class QuadTreeNode:
         in_range = range[0][0] <= point[0] <= range[0][1] and range[1][0] <= point[1] <= range[1][1]
         return in_range
 
-    """Returns true if this node contains the given point (x, y), false otherwise."""
+    """Returns true if this node contains the given point (x, y), false
+    otherwise."""
     def contains(self, x, y):
         return self.x_range[0] <= x <= self.x_range[1] and self.y_range[0] <= y <= self.y_range[1]
 
