@@ -1,9 +1,10 @@
 class QuadTreeNode:
     """Constructs a new node with the given x and y ranges and points. If node
     has more than 4 points, it will be split into 4 child nodes."""
-    def __init__(self, x_range, y_range, points=None, parent=None):
+    def __init__(self, x_range, y_range, medians, points=None, parent=None):
         self.x_range = x_range  # (x_min, x_max)
         self.y_range = y_range  # (y_min, y_max)
+        self.medians = medians # Medians of x and y ranges
         self.points = points if points else []  # Points in this node
         self.parent = parent  # Parent node
         self.children = []  # Child nodes
@@ -13,19 +14,21 @@ class QuadTreeNode:
             self.split()
 
     """Splits this node into 4 child nodes based on quadrants defined by the
-    midpoints of the x and y ranges. Points are assigned to child nodes based
-    on which quadrant they fall into."""
+    medians of x and y. Points are assigned to child nodes based on which
+    quadrant they fall into."""
     def split(self):
-        # Find midpoints of x and y ranges
-        x_mid = (self.x_range[0] + self.x_range[1]) / 2
-        y_mid = (self.y_range[0] + self.y_range[1]) / 2
+        # Find medians of x and y ranges
+        x_median = self.medians[0]
+        y_median = self.medians[1]
+        # x_mid = (self.x_range[0] + self.x_range[1]) / 2
+        # y_mid = (self.y_range[0] + self.y_range[1]) / 2
 
-        # Quadrants are defined as ((x_min, x_max), (y_min, y_max))
+        # Quadrants are ((x_min, x_max), (y_min, y_max))
         quadrants = [
-            ((self.x_range[0], x_mid), (self.y_range[0], y_mid)),  # Bottom left
-            ((x_mid, self.x_range[1]), (self.y_range[0], y_mid)),  # Bottom right
-            ((self.x_range[0], x_mid), (y_mid, self.y_range[1])),  # Top left
-            ((x_mid, self.x_range[1]), (y_mid, self.y_range[1]))  # Top right
+            ((self.x_range[0], x_median), (self.y_range[0], y_median)),  # Bottom left
+            ((x_median, self.x_range[1]), (self.y_range[0], y_median)),  # Bottom right
+            ((self.x_range[0], x_median), (y_median, self.y_range[1])),  # Top left
+            ((x_median, self.x_range[1]), (y_median, self.y_range[1]))  # Top right
         ]
 
         # Create a child node for each quadrant
@@ -36,17 +39,14 @@ class QuadTreeNode:
 
         self.points = []  # Delete points from this node since they are now in child nodes
 
-    """Returns true if the given point is within the given range, false
-    otherwise."""
-    def point_in_range(self, point, range):
-        # range is ((x_min, x_max), (y_min, y_max))
-        in_range = range[0][0] <= point[0] <= range[0][1] and range[1][0] <= point[1] <= range[1][1]
-        return in_range
-
-    """Returns true if this node contains the given point (x, y), false
-    otherwise."""
+    """Checks if the point (x, y) is within this node's bounds."""
     def contains(self, x, y):
         return self.x_range[0] <= x <= self.x_range[1] and self.y_range[0] <= y <= self.y_range[1]
+
+    """Checks if the given point is within the given range."""
+    def point_in_range(self, point, range):
+        # Range = ((x_min, x_max), (y_min, y_max))
+        return range[0][0] <= point[0] <= range[0][1] and range[1][0] <= point[1] <= range[1][1]
 
     """Returns the smallest node that contains the given point."""
     def small_containing_quadtree(self, x, y):
@@ -59,8 +59,7 @@ class QuadTreeNode:
                 return child.small_containing_quadtree(x, y)
         return self
 
-    """Returns the distance between the given point and the closest point in
-    this node or its child nodes."""
+    """Calculates the distance between two points in this node or its child nodes."""
     @staticmethod
     def euclidean_distance(point_1, point_2):
         return ((point_1[0] - point_2[0])**2 + (point_1[1] - point_2[1])**2)**0.5
