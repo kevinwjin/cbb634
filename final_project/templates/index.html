@@ -1,0 +1,28 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>NCI Cancer Incidence API</title>
+        <link rel="stylesheet" href='/static/main.css' />
+        <link rel="icon" type="image/x-icon" href="/static/favicon.jpeg" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/static/submit.js"></script>
+    </head>
+    <body>
+        <h1>NCI Age-Adjusted Incidence of Cancer by State</h1>
+        <h2>Enter a state (or the entire US) to return its age-adjusted incidence rate:</h2>
+        <form action="/info" method="GET">
+            <textarea id="state" name="state" placeholder="Enter a state... (e.g. Connecticut, New Jersey, Massachusetts, New Hampshire)"></textarea>
+            <br>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+        <footer>
+            <b><p>Data is sourced from the <a href="https://statecancerprofiles.cancer.gov/incidencerates/index.php">National Cancer Institute</a>.</p></b>
+            <br>
+            <span class="small"><p>Kevin Jin</p>
+            <p>CB&B 634: Computational Methods for Informatics</p>
+            <p>Yale University</p>
+            <p><a href="mailto:kevin.jin@yale.edu">kevin.jin@yale.edu</a></p></span>
+        </footer>
+    </body>
+</html>
