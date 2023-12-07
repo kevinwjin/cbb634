@@ -1,11 +1,10 @@
 class QuadTreeNode:
     """Constructs a new node with the given x and y ranges and points. If node
     has more than 4 points, it will be split into 4 child nodes."""
-    def __init__(self, x_range, y_range, medians, points=None, parent=None):
+    def __init__(self, x_range, y_range, points=None, parent=None):
         self.x_range = x_range  # (x_min, x_max)
         self.y_range = y_range  # (y_min, y_max)
-        self.medians = medians # Medians of x and y ranges
-        self.points = points if points else []  # Points in this node
+        self.points = points if points else []  # Distribute points to this node if given
         self.parent = parent  # Parent node
         self.children = []  # Child nodes
 
@@ -13,40 +12,45 @@ class QuadTreeNode:
         if len(self.points) > 4:
             self.split()
 
-    """Splits this node into 4 child nodes based on quadrants defined by the
-    medians of x and y. Points are assigned to child nodes based on which
-    quadrant they fall into."""
+    """Splits this node into 4 child nodes based on bounding box quadrants
+    defined by the midpoints of x and y. Points are assigned to child nodes
+    based on which quadrant of the bounding box they fall into."""
     def split(self):
-        # Find medians of x and y ranges
-        x_median = self.medians[0]
-        y_median = self.medians[1]
-        # x_mid = (self.x_range[0] + self.x_range[1]) / 2
-        # y_mid = (self.y_range[0] + self.y_range[1]) / 2
+        # Find midpoints of x and y ranges
+        x_mid = (self.x_range[0] + self.x_range[1]) / 2
+        y_mid = (self.y_range[0] + self.y_range[1]) / 2
 
-        # Quadrants are ((x_min, x_max), (y_min, y_max))
+        # Bounding box quadrants = ((x_min, x_max), (y_min, y_max))
         quadrants = [
-            ((self.x_range[0], x_median), (self.y_range[0], y_median)),  # Bottom left
-            ((x_median, self.x_range[1]), (self.y_range[0], y_median)),  # Bottom right
-            ((self.x_range[0], x_median), (y_median, self.y_range[1])),  # Top left
-            ((x_median, self.x_range[1]), (y_median, self.y_range[1]))  # Top right
+            ((self.x_range[0], x_mid), (self.y_range[0], y_mid)),  # Bottom left quadrant
+            ((x_mid, self.x_range[1]), (self.y_range[0], y_mid)),  # Bottom right quadrant
+            ((self.x_range[0], x_mid), (y_mid, self.y_range[1])),  # Top left quadrant
+            ((x_mid, self.x_range[1]), (y_mid, self.y_range[1]))  # Top right quadrant
         ]
 
-        # Create a child node for each quadrant
+        # Create a child node for each bounding box quadrant
         for quadrant in quadrants:
+            # Find points that fall within the quadrant
             child_points = [point for point in self.points if self.point_in_range(point, quadrant)]
+            # Create a child node for the quadrant
             child_node = QuadTreeNode(quadrant[0], quadrant[1], child_points, self)
+            # Add the child node to this node's children
             self.children.append(child_node)
 
-        self.points = []  # Delete points from this node since they are now in child nodes
+        self.points = []  # Purge this node's points list since they are now in child nodes
 
     """Checks if the point (x, y) is within this node's bounds."""
     def contains(self, x, y):
         return self.x_range[0] <= x <= self.x_range[1] and self.y_range[0] <= y <= self.y_range[1]
 
     """Checks if the given point is within the given range."""
-    def point_in_range(self, point, range):
-        # Range = ((x_min, x_max), (y_min, y_max))
-        return range[0][0] <= point[0] <= range[0][1] and range[1][0] <= point[1] <= range[1][1]
+    def point_in_range(self, point, quadrant):
+        # Unpack quadrant into x and y ranges
+        (x_min, x_max), (y_min, y_max) = quadrant
+        # Unpack point into x and y coordinates
+        x, y, _ = point
+        # Check if point is within the given range
+        return x_min <= x <= x_max and y_min <= y <= y_max
 
     """Returns the smallest node that contains the given point."""
     def small_containing_quadtree(self, x, y):
@@ -64,29 +68,29 @@ class QuadTreeNode:
     def euclidean_distance(point_1, point_2):
         return ((point_1[0] - point_2[0])**2 + (point_1[1] - point_2[1])**2)**0.5
 
-    """Returns true if the given point is within the given distance of this
-    node or its child nodes, false otherwise."""
+    """Checks if the given point (x, y) is within the given distance d of this node
+    or its child nodes."""
     def within_distance(self, x, y, d):
         closest_x = max(self.x_range[0], min(x, self.x_range[1]))
         closest_y = max(self.y_range[0], min(y, self.y_range[1]))
         return self.euclidean_distance((x, y), (closest_x, closest_y)) <= d
 
-    """Returns all leaves within a given distance of a point (x, y)."""
-    def leaves_within_distance(self, x, y, d):
-        # If this node is a leaf, return this node if it is within the given distance
-        if self.is_leaf():
-            return [self] if self.within_distance(x, y, d) else []
-        # Otherwise, return all leaves within the given distance from this node's children
-        return [leaf for child in self.children for leaf in child.leaves_within_distance(x, y, d)]
-
-    """Returns true if this node is a leaf (no children), false otherwise."""
+    """Checks if this node is a leaf (does not have any children)."""
     def is_leaf(self):
         return len(self.children) == 0
 
-    """Parent tree asks for all points in this node and its children."""
+    """Returns all leaves within a given distance of the given point (x, y)."""
+    def leaves_within_distance(self, x, y, d):
+        # Return this leaf if it is within the given distance d
+        if self.is_leaf():
+            return [self] if self.within_distance(x, y, d) else []
+        # Otherwise, recurse through this node's children and return all leaves within the given distance d
+        return [leaf for child in self.children for leaf in child.leaves_within_distance(x, y, d)]
+
+    """Return all points in this node and its children."""
     def all_points(self):
-        # If this node is a leaf, return its points
+        # Checks if this node is a leaf; return its points if so
         if self.is_leaf():
             return self.points
-        # Otherwise, return all points in this node's children
+        # Otherwise, recurse through this node's children and return all points within them
         return [point for child in self.children for point in child.all_points()]
