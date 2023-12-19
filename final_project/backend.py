@@ -117,7 +117,131 @@ st.plotly_chart(wages_peers_plot, use_container_width=True)
 st.header("Part 2: ✈️ Immigration")
 
 st.subheader("2a: 👷🏻‍♀️ What kinds of people are coming to Japan?")
+# Load visa data for Japan
+visas = pd.read_csv("datasets/2_immigration/visa_number_in_japan.csv")
+
+# Plot total visas issued by Japan from 2006-2017
+total = visas[visas["Country"] == "total"] # Pull country totals
+visas = visas[visas["Country"] != "total"].reset_index(drop=True) # Delete non-total rows
+visas_japan = px.bar(total, x="Year", y="Number of issued")
+visas_japan.update_layout(title="Total visas issued by Japan from 2006-2017")
+st.plotly_chart(visas_japan, use_container_width=True)
+
+# Plot visas issued for top ten countries of issuance except China from 2006-2017
+top_countries = visas[visas['Country'] != 'total'].groupby('Country')['Number of issued'].sum().nlargest(10).index
+top_countries_data = visas[(visas['Country'].isin(top_countries)) & (visas['Country'] != 'total')]
+top_countries_data = top_countries_data[top_countries_data['Country'] != 'China']
+visas_top_ten_no_china = px.line(top_countries_data, x='Year', y='Number of issued', color='Country')
+visas_top_ten_no_china.update_layout(title='Number of Visas Issued for Top Ten Countries of Issuance, excluding China (2006-2017)',
+                  xaxis_title='Year',
+                  yaxis_title='Number of Visas Issued')
+st.plotly_chart(visas_top_ten_no_china, use_container_width=True)
+
+# Plot visas issued for top ten countries of issuance (with China) from 2006-2017
+top_countries = visas[visas['Country'] != 'total'].groupby('Country')['Number of issued'].sum().nlargest(10).index
+top_countries_data = visas[(visas['Country'].isin(top_countries)) & (visas['Country'] != 'total')]
+
+visas_top_ten = px.line(top_countries_data, x='Year', y='Number of issued', color='Country')
+visas_top_ten.update_layout(title='Number of Visas Issued Over Time for Top Ten Countries of Issuance (2006-2017)',
+                  xaxis_title='Year',
+                  yaxis_title='Number of Visas Issued')
+st.plotly_chart(visas_top_ten, use_container_width=True)
+
+st.subheader("Tangent: 📊 Predicting the country of future immigrants with Random Forests")
+
+# Attempt to predict the number of visas issued for each country in 2018 using Random Forests
+num_estimators = st.number_input("Specify the number of tree estimators", min_value=10, max_value=1000, value=100, step=1, format="%d")
+
+
+def random_forests_classifier(num_estimators):
+    from sklearn.model_selection import train_test_split
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.metrics import accuracy_score
+    from sklearn.preprocessing import StandardScaler
+    # Load the dataset
+    visas = pd.read_csv("datasets/2_immigration/visa_number_in_japan.csv")
+
+    # Preprocess the data
+    X = visas.drop(columns=["Country"])
+    X.fillna(0, inplace=True) # Replace NaN with 0
+    y = visas["Country"]
+
+    # Normalize the data
+    scaler = StandardScaler()
+    X_normalized = scaler.fit_transform(X)
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X_normalized, y, test_size=0.2, random_state=42)
+
+    # Create and train the Random Forest classifier
+    n_estimators = num_estimators  # Number of trees in the forest
+    model = RandomForestClassifier(n_estimators=n_estimators)
+    model.fit(X_train, y_train)
+
+    # Make predictions on the test set
+    y_pred = model.predict(X_test)
+
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write("Accuracy:", accuracy)
+
+    # Make a prediction
+    prediction = model.predict(X_test[0].reshape(1, -1))
+    st.write("Prediction:", prediction)
+
+    # Plot feature importances of the Random Forest classifier
+    import plotly.graph_objects as go
+
+    # Get feature importances
+    importances = model.feature_importances_
+
+    # Get feature names
+    feature_names = X.columns
+
+    # Sort feature importances in descending order
+    indices = importances.argsort()[::-1]
+
+    feature_importance = go.Figure(data=[go.Bar(x=feature_names[indices], y=importances[indices])])
+    feature_importance.update_layout(
+        title="Feature importance of the Random Forest classifier",
+        xaxis_title="Features",
+        yaxis_title="Importance",
+        xaxis_tickangle=-90
+    )
+    st.plotly_chart(feature_importance, use_container_width=True)
+
+
+random_forests_classifier(num_estimators)
 
 st.subheader("2b: 🗼 Where are they going?")
+
+# Load administrative boundary data for Japan's prefectures
+import geopandas as gpd
+
+japan = gpd.read_file("datasets/2_immigration/prefectures.geojson")
+prefectures_english = [
+    "Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima", "Ibaraki", "Tochigi", 
+    "Gunma", "Saitama", "Chiba", "Tokyo", "Kanagawa", "Niigata", "Toyama", "Ishikawa", "Fukui", 
+    "Yamanashi", "Nagano", "Gifu", "Shizuoka", "Aichi", "Mie", "Shiga", "Kyoto", "Osaka", "Hyogo", 
+    "Nara", "Wakayama", "Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi", "Tokushima", 
+    "Kagawa", "Ehime", "Kochi", "Fukuoka", "Saga", "Nagasaki", "Kumamoto", "Oita", "Miyazaki", 
+    "Kagoshima", "Okinawa"
+]
+japan['P'] = prefectures_english
+japan.rename(columns={'P': 'Prefecture'}, inplace=True)
+
+# Load foreign resident data
+foreigners = pd.read_csv("datasets/2_immigration/foreign_residents.csv")
+foreigners = foreigners.drop(0) # Drop first row
+
+# Merge two dataframes
+japan_foreigners = japan.merge(foreigners, on='Prefecture') # Add foreign resident data to prefecture geodataframe
+japan_foreigners[japan_foreigners.columns[2:]] = japan_foreigners[japan_foreigners.columns[2:]].replace(',','', regex=True) # Strip commas from numbers 
+japan_foreigners[japan_foreigners.columns[2:]] = japan_foreigners[japan_foreigners.columns[2:]].apply(pd.to_numeric)
+
+# Plot map of Japan prefectures colored by number of foreign residents
+foreigners_map = px.choropleth_mapbox(japan_foreigners, geojson=japan_foreigners.geometry, locations=japan_foreigners.index, color="Total", hover_name="Prefecture", hover_data="Total", mapbox_style="carto-positron", zoom=3, center = {"lat": 37.0902, "lon": 138.7129}, opacity=0.5, labels={'Total':'Number of Foreign Residents'})
+foreigners_map.update_layout(title_text='Number of Foreign Residents in Japan by Prefecture (2023)')
+st.plotly_chart(foreigners_map, use_container_width=True)
 
 st.header("✍🏻 Conclusion")
