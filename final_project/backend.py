@@ -189,8 +189,9 @@ def random_forests_classifier(num_estimators):
     progress_bar.progress(75, text=progress_text)
     # Make a prediction
     prediction = model.predict(X_test[0].reshape(1, -1))
-    st.write("Prediction:", prediction)
-
+    # Print the prediction
+    st.write("Predicted country:", prediction[0])
+    
     progress_text = "Plotting feature importance..."
     progress_bar.progress(100, text=progress_text)
     # Plot feature importances of the Random Forest classifier
