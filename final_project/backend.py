@@ -56,7 +56,7 @@ fertility_peer_nations.update_layout(legend_title_text='Country') # Move the leg
 fertility_peer_nations.add_hline(y=2.1, line_dash="dash", line_color="black", annotation_text="Global Replacement Fertility Rate", annotation_position="top right") # Indicate global average fertility rate of 2.1 with horizontal line
 
 # Create tabs for the two plots
-japan_only, japan_with_peer_nations = st.tabs(["Japan only", "Japan with peer nations"])
+japan_only, japan_with_peer_nations = st.tabs(["Japan", "Japan with Peer Nations"])
 with japan_only:
     st.plotly_chart(fertility_japan, use_container_width=True)
 with japan_with_peer_nations:
@@ -82,7 +82,6 @@ wages_japan = wages_japan.join(fertility_rates_japan.set_index('Year'), on='Year
 # Plot average wages against fertility rates for Japan over 1991 - 2022
 wages_japan_plot = px.scatter(wages_japan, x="Average Wage (USD)", y="Total Fertility Rate", trendline="ols", trendline_color_override="red") # Plot scatter plot with linear trendline
 wages_japan_plot.update_layout(title_text='Average Wage vs. Total Fertility Rate in Japan (1991 - 2022)', xaxis_title='Average Wage (USD)', yaxis_title='Total Fertility Rate') # Plot and axis titles
-st.plotly_chart(wages_japan_plot, use_container_width=True)
 
 # Repeat for peer nations (United States, Canada, South Korea, United Kingdom, Germany, France) using multiple subplots
 from plotly.subplots import make_subplots
@@ -112,7 +111,12 @@ wages_peers_plot.add_trace(px.scatter(wages_peers, x="GBR", y="United Kingdom", 
 wages_peers_plot.add_trace(px.scatter(wages_peers, x="DEU", y="Germany", trendline="ols", trendline_color_override="red").data[0], row=2, col=2)
 wages_peers_plot.add_trace(px.scatter(wages_peers, x="FRA", y="France", trendline="ols", trendline_color_override="red").data[0], row=2, col=3)
 wages_peers_plot.update_layout(title_text='Average Wage vs. Total Fertility Rate in Peer Nations (1991 - 2022)') # Plot title
-st.plotly_chart(wages_peers_plot, use_container_width=True)
+
+fertility_japan_tab, fertility_peer_nations_tab = st.tabs(["Japan", "Peer Nations"])
+with fertility_japan_tab:
+    st.plotly_chart(wages_japan_plot, use_container_width=True)
+with fertility_peer_nations_tab:
+    st.plotly_chart(wages_peers_plot, use_container_width=True)
 
 st.header("Part 2: ✈️ Immigration")
 
@@ -135,7 +139,6 @@ visas_top_ten_no_china = px.line(top_countries_data, x='Year', y='Number of issu
 visas_top_ten_no_china.update_layout(title='Number of Visas Issued for Top Ten Countries of Issuance, excluding China (2006-2017)',
                   xaxis_title='Year',
                   yaxis_title='Number of Visas Issued')
-st.plotly_chart(visas_top_ten_no_china, use_container_width=True)
 
 # Plot visas issued for top ten countries of issuance (with China) from 2006-2017
 top_countries = visas[visas['Country'] != 'total'].groupby('Country')['Number of issued'].sum().nlargest(10).index
@@ -145,7 +148,12 @@ visas_top_ten = px.line(top_countries_data, x='Year', y='Number of issued', colo
 visas_top_ten.update_layout(title='Number of Visas Issued Over Time for Top Ten Countries of Issuance (2006-2017)',
                   xaxis_title='Year',
                   yaxis_title='Number of Visas Issued')
-st.plotly_chart(visas_top_ten, use_container_width=True)
+
+visas_top_ten_tab, visas_no_china_tab = st.tabs(["With China", "Without China"])
+with visas_top_ten_tab:
+    st.plotly_chart(visas_top_ten, use_container_width=True)
+with visas_no_china_tab:
+    st.plotly_chart(visas_top_ten_no_china, use_container_width=True)
 
 st.subheader("Tangent: 📊 Predicting the country of future immigrants with Random Forests")
 
