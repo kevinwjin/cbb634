@@ -144,6 +144,7 @@ st.subheader("Tangent: 📊 Predicting the country of future immigrants with Ran
 # Attempt to predict the number of visas issued for each country in 2018 using Random Forests
 num_estimators = st.number_input("Specify the number of tree estimators", min_value=10, max_value=1000, value=100, step=1, format="%d")
 
+
 # API endpoint for Random Forests classifier
 def random_forests_classifier(num_estimators):
     from sklearn.model_selection import train_test_split
@@ -165,50 +166,55 @@ def random_forests_classifier(num_estimators):
     # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X_normalized, y, test_size=0.2, random_state=42)
 
-    #progress_bar = st.progress(0, text=progress_text)
+    progress_text = f"Fitting model with {num_estimators} estimators..."
+    progress_bar = st.progress(0, text=progress_text)
+    progress_bar.progress(25, text=progress_text)
+    # Create and train the Random Forest classifier
+    n_estimators = num_estimators  # Number of trees in the forest
+    model = RandomForestClassifier(n_estimators=n_estimators)
+    model.fit(X_train, y_train)
 
-    with st.status("Generating prediction..."):
-        st.write(f"Fitting model with {num_estimators} estimators...")
-        # Create and train the Random Forest classifier
-        n_estimators = num_estimators  # Number of trees in the forest
-        model = RandomForestClassifier(n_estimators=n_estimators)
-        model.fit(X_train, y_train)
+    progress_text = "Making predictions..."
+    progress_bar.progress(40, text=progress_text)
+    # Make predictions on the test set
+    y_pred = model.predict(X_test)
 
-        st.write("Making predictions...")
-        # Make predictions on the test set
-        y_pred = model.predict(X_test)
+    progress_text = "Evaluating model..."
+    progress_bar.progress(50, text=progress_text)
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    st.write("Accuracy:", accuracy)
 
-        st.write("Evaluating model...")
-        # Evaluate the model
-        accuracy = accuracy_score(y_test, y_pred)
-        st.write("Accuracy:", accuracy)
+    progress_text = "Generating a prediction..."
+    progress_bar.progress(75, text=progress_text)
+    # Make a prediction
+    prediction = model.predict(X_test[0].reshape(1, -1))
+    st.write("Prediction:", prediction)
 
-        st.write("Generating a prediction...")
-        # Make a prediction
-        prediction = model.predict(X_test[0].reshape(1, -1))
-        st.write("Prediction:", prediction)
+    progress_text = "Plotting feature importance..."
+    progress_bar.progress(100, text=progress_text)
+    # Plot feature importances of the Random Forest classifier
+    import plotly.graph_objects as go
 
-        st.write("Plotting feature importance...")
-        # Plot feature importances of the Random Forest classifier
-        import plotly.graph_objects as go
+    # Get feature importances
+    importances = model.feature_importances_
 
-        # Get feature importances
-        importances = model.feature_importances_
+    # Get feature names
+    feature_names = X.columns
 
-        # Get feature names
-        feature_names = X.columns
+    # Sort feature importances in descending order
+    indices = importances.argsort()[::-1]
 
-        # Sort feature importances in descending order
-        indices = importances.argsort()[::-1]
-
-        feature_importance = go.Figure(data=[go.Bar(x=feature_names[indices], y=importances[indices])])
-        feature_importance.update_layout(
-            title="Feature importance of the Random Forest classifier",
-            xaxis_title="Features",
-            yaxis_title="Importance",
-            xaxis_tickangle=-90
-        )
-        st.plotly_chart(feature_importance, use_container_width=True)
+    feature_importance = go.Figure(data=[go.Bar(x=feature_names[indices], y=importances[indices])])
+    feature_importance.update_layout(
+        title="Feature importance of the Random Forest classifier",
+        xaxis_title="Features",
+        yaxis_title="Importance",
+        xaxis_tickangle=-90
+    )
+    st.plotly_chart(feature_importance, use_container_width=True)
+    progress_text = "Model fitting complete."
+    progress_bar.progress(100, text=progress_text)
 
 
 random_forests_classifier(num_estimators)
