@@ -65,8 +65,6 @@ with japan_with_peer_nations:
 st.subheader("1b: 💸 What is causing falling fertility rates?")
 
 # Load wage data for Japan
-import pandas as pd
-
 wages = pd.read_csv("datasets/1_demographics/average_wages.csv")
 wages_japan = wages[wages['LOCATION'] == "JPN"] # Take only Japan rows
 wages_japan = wages_japan[['TIME', 'Value']] # Grab year and value columns
